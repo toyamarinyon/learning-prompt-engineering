@@ -14,7 +14,19 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
     apiKey: context.env.OPENAI_API_KEY,
   });
   const completion = await openai.chat.completions.create({
-    messages: [{ role: "user", content: prompt }],
+    messages: [
+      {
+        role: "system",
+        content: `ユーザーからの入力に最もあう色を答えてください。以下のように、ユーザーからの入力に続ける形で答えてください。
+user: 空は
+assistant: 青色です。
+user: 海は
+assistant: 青色です。
+user: 草は
+assistant: 緑色です。`,
+      },
+      { role: "user", content: prompt },
+    ],
     model: "gpt-3.5-turbo",
   });
   const assistant = completion.choices[0].message.content;
