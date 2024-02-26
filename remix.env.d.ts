@@ -5,8 +5,10 @@ import type { AppLoadContext as OriginalAppLoadContext } from "@remix-run/server
 
 declare module "@remix-run/server-runtime" {
   export interface AppLoadContext extends OriginalAppLoadContext {
-    env: {
-      OPENAI_API_KEY: string;
+    cloudflare: {
+      env: {
+        OPENAI_API_KEY: string;
+      };
     };
   }
 }
