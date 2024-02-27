@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, json } from "@remix-run/cloudflare";
-import { Form, Link, useActionData, useNavigation } from "@remix-run/react";
+import { Form, useActionData, useNavigation } from "@remix-run/react";
 import { CheckIcon } from "lucide-react";
 import { OpenAI } from "openai";
 import { useEffect, useState } from "react";
@@ -18,21 +18,7 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
     apiKey: context.cloudflare.env.OPENAI_API_KEY,
   });
   const completion = await openai.chat.completions.create({
-    messages: [
-      {
-        role: "system",
-        content: `ユーザーからの入力に最もあう色を答えてください。以下のように、ユーザーからの入力に続ける形で答えてください。
-user: 空は
-assistant: 青色
-user: 海は
-assistant: 青色
-user: 草は
-assistant: 緑色
-user: 苺は
-assistant: 赤色`,
-      },
-      { role: "user", content: prompt },
-    ],
+    messages: [{ role: "user", content: prompt }],
     model: "gpt-3.5-turbo",
   });
   const assistant = completion.choices[0].message.content;
@@ -67,20 +53,58 @@ export default function Index() {
             </p>
           </section>
           <section>
-            <h2 className="py-4 text-xl">レッスン1: 空は？</h2>
-            <p>
-              まずは、シンプルなプロンプトから始めましょう。右の
-              <Label htmlFor="prompt">
-                <Badge className="mx-1">プロンプト</Badge>
-              </Label>
-              と書かれているテキストエリアに
-              <span className="bg-muted rounded px-2 py-0.5">空は</span>
-              と入力して
-              <Button className="mx-1" size={"inline"}>
-                結果を確認
-              </Button>
-              ボタンを押してみましょう。
-            </p>
+            <h2 className="py-4 text-xl">レッスン2: 4つの力を使いこなす</h2>
+            <div>
+              <p>
+                プロンプトエンジニアリングで、生成AIの出力内容を調整するためには、以下の4つの力を使いこなす必要があります。
+              </p>
+              <ul className="my-4 ml-4 list-disc space-y-1">
+                <li>
+                  <strong>命令</strong> -
+                  モデルに実行してほしい特定のタスクまたは命令
+                </li>
+                <li>
+                  <strong>文脈</strong> -
+                  外部情報や追加の文脈が含まれる場合があり、モデルをより良い応答に導くことができます。
+                </li>
+                <li>
+                  <strong>入力データ</strong> - 応答を見つけたい入力または質問
+                </li>
+                <li>
+                  <strong>出力指示子</strong> - 出力のタイプや形式を示します。
+                </li>
+              </ul>
+              <p className="mb-4">
+                以下の文章を
+                <Label htmlFor="prompt">
+                  <Badge className="mx-1">プロンプト</Badge>
+                </Label>
+                に貼り付けて
+                <Button className="mx-1" size={"inline"}>
+                  結果を確認
+                </Button>
+                ボタンを押してみましょう。
+              </p>
+              <p className="bg-zinc-100 p-4">
+                文章を中立的、肯定的、否定的に分類してください。
+                <br />
+                <br />
+                テキスト: あの映画は面白かったと思う。
+                <br />
+                感情: 肯定的
+                <br />
+                テキスト: あの映画はつまらなかったと思う。
+                <br />
+                感情: 否定的
+                <br />
+                テキスト: あの映画はまあまあ面白かったと思う。
+                <br />
+                感情: 中立的
+                <br />
+                テキスト: 食事はまあまあおいしかったと思う。 <br />
+                感情:
+              </p>
+            </div>
           </section>
         </div>
         <Form className="flex w-full flex-col divide-y" method="post">
@@ -141,23 +165,16 @@ export default function Index() {
                   })}
                 />
                 <p>
-                  <Badge className="mr-1">結果</Badge>に青色と表示される
+                  <Badge className="mr-1">結果</Badge>に中立的と表示される。
                 </p>
               </div>
               {objective1 && (
-                <>
-                  <div className="mt-2 rounded bg-zinc-100 p-4">
-                    <p>
-                      いいですね。このように、入力された文章の続きを生成するのが生成AIの基本的な使い方です。
-                    </p>
-                    <p>
-                      そして、生成内容を調整する技法がプロンプトエンジニアリングです。次のレッスンではもう少し抽象的な内容を生成してみましょう。
-                    </p>
-                  </div>
-                  <Button className="mt-4">
-                    <Link to="/lesson2">次のレッスンへ</Link>
-                  </Button>
-                </>
+                <div className="mt-2 rounded bg-zinc-100 p-4">
+                  <p>
+                    いいですね。入力した文章が、4つの力のどれにあたるかを考えてみましょう。
+                  </p>
+                  <p>4つの力のミニクイズが続く</p>
+                </div>
               )}
             </CardContent>
           </Card>
